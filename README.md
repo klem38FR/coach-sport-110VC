@@ -1,6 +1,6 @@
 # Coach Maison – entraînement sans matériel
 
-Application web installable (PWA) de coaching sportif à la maison : séances guidées avec bips et chrono, exercices animés et sourcés (NHS, BHF, ACE, NASM), fréquence cardiaque en Bluetooth (ceinture type Polar H10), marche et course avec GPS, statistiques personnalisables, profils, exports PDF / Excel / CSV / GPX.
+Application web installable (PWA) de coaching sportif à la maison : séances guidées avec bips et chrono, exercices animés et sourcés (NHS, BHF, ACE, NASM), fréquence cardiaque en Bluetooth (ceinture type Polar H10), sorties GPS (marche, course, vélo et vélo électrique, mode incognito qui masque le début et la fin de la trace, bouton « Figer » contre les fausses manipulations), statistiques personnalisables, profils, exports PDF / Excel / CSV / GPX.
 
 ## Utiliser l'application
 - Adresse (GitHub Pages) : `https://klem38fr.github.io/coach-sport-110VC/`
