@@ -214,6 +214,16 @@ details.menu{position:relative}details.menu>summary{list-style:none}
 .chips.mini{margin:0 0 8px}.chips.mini .chip{font-size:12px;padding:.25em .7em}
 .zbar{display:flex;height:14px;border-radius:99px;overflow:hidden;gap:2px;margin:4px 0 10px}
 .tscroll{overflow:auto;max-height:420px}
+.tagc{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:99px;color:var(--ink,#e8ebf1);background:color-mix(in srgb,var(--c) 22%,transparent);border:1px solid color-mix(in srgb,var(--c) 60%,transparent);white-space:nowrap}
+.bform{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin:6px 0 10px}
+.bform label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}.bform input,.bform select{width:100%;box-sizing:border-box}
+.bcells{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.bcell{background:#1d2129;border-radius:10px;padding:10px}.bcell .bl{font-size:12px;color:var(--muted)}.bcell .bv{font-size:22px;font-weight:700;margin:2px 0}.bcell .bv small{font-size:12px;font-weight:400;color:var(--muted)}.bcell .bd{font-size:12px;color:var(--muted);margin-bottom:4px}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:14px;margin-bottom:14px}.bgrid .ccard{margin-bottom:0;min-width:0}
+.ngrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:16px}.ngrid h4{margin:4px 0 8px}
+.ntab{border-collapse:collapse;width:100%;font-size:13px}.ntab th,.ntab td{padding:5px 6px;border-bottom:1px solid #262b35;text-align:left}.ntab tr.me td{background:#1f2633}
+.nsrc{font-size:12px;color:var(--muted);margin-top:6px}
+
 body.dragging,body.dragging *{user-select:none;-webkit-user-select:none;cursor:grabbing!important}
 
 /* marche & course */
@@ -262,6 +272,7 @@ body.dragging,body.dragging *{user-select:none;-webkit-user-select:none;cursor:g
     <button data-v="creer">Créer</button>
     <button data-v="biblio">Exercices</button>
     <button data-v="run">Sorties</button>
+    <button data-v="corps">Corps</button>
     <button data-v="chrono">Chrono</button>
     <button data-v="histo">Historique</button>
     <button data-v="stats">Statistiques</button>
@@ -348,6 +359,55 @@ body.dragging,body.dragging *{user-select:none;-webkit-user-select:none;cursor:g
 </section>
 
 <!-- CHRONO -->
+<!-- CORPS -->
+<section class="view" id="v-corps">
+  <h2>Corps <span class="muted" style="font-size:14px;font-weight:400">· suivi du pèse-personne impédancemètre</span></h2>
+  <div class="demo-banner" id="bDemoBanner" style="display:none">Données d'exemple (non enregistrées). <a href="#" id="bDemoOff">Revenir à mes données</a></div>
+  <div class="ccard">
+    <h3>👤 Profil corporel</h3>
+    <div class="hint">Rattaché au profil actif. Sert à l'IMC, aux normes et au calcul des calories.</div>
+    <div class="bform">
+      <label>Sexe<select id="bSex"><option value="">—</option><option value="f">Femme</option><option value="h">Homme</option></select></label>
+      <label>Taille (cm)<input id="bH" type="number" min="100" max="250" placeholder="ex. 175"></label>
+      <label>Année de naissance<input id="bBy" type="number" min="1900" max="2100" placeholder="ex. 1985"></label>
+      <label>Poids de référence (kg)<input id="bKg" type="text" inputmode="decimal" placeholder="si aucune pesée"></label>
+      <label>Assistance du vélo électrique<select id="bEb"><option value="light">Faible (MET 6,0)</option><option value="high">Forte (MET 4,0)</option><option value="none">Sans assistance (MET 6,8)</option></select></label>
+      <label>Calcul des calories<select id="bMeth"><option value="auto">Auto : FC si mesurée, sinon MET</option><option value="met">MET uniquement</option></select></label>
+    </div>
+    <div class="muted" style="font-size:12px" id="bProfHint"></div>
+  </div>
+  <div class="ccard" id="bForm">
+    <h3>⚖ Nouvelle pesée</h3>
+    <div class="hint">Recopie les valeurs affichées par ta balance Continental Edison. Seule la masse est obligatoire.</div>
+    <div class="bform">
+      <label>Date<input id="bDate" type="date"></label>
+      <label>Heure<input id="bTime" type="time"></label>
+      <label>Repas<select id="bMeal"><option value="">—</option><option value="avant">Avant repas</option><option value="apres">Après repas</option></select></label>
+      <label>Masse (kg) *<input id="bf_kg" type="text" inputmode="decimal" placeholder="ex. 72,4"></label>
+      <label>Os (%)<input id="bf_bone" type="text" inputmode="decimal"></label>
+      <label>Graisse (%)<input id="bf_fat" type="text" inputmode="decimal"></label>
+      <label>Eau (%)<input id="bf_water" type="text" inputmode="decimal"></label>
+      <label>Muscle (%)<input id="bf_muscle" type="text" inputmode="decimal"></label>
+      <label>Kcal<input id="bf_kcal" type="text" inputmode="numeric"></label>
+    </div>
+    <div class="row"><button class="primary" id="bdSave">Enregistrer la pesée</button><button class="ghost" id="bdCancel" style="display:none">Annuler la modification</button></div>
+    <div class="muted" style="font-size:12px;margin-top:8px">Selon les modèles, la masse osseuse peut s'afficher en kg plutôt qu'en % et les « kcal » correspondent en général à un besoin énergétique estimé par la balance : vérifie l'unité dans ta notice (je n'ai pas pu la consulter).</div>
+  </div>
+  <div class="ccard" id="bNow"></div>
+  <div class="chips" id="bPeriod"><button class="chip" data-p="30">30 jours</button><button class="chip" data-p="90">3 mois</button><button class="chip" data-p="365">1 an</button><button class="chip" data-p="0">Tout</button></div>
+  <div class="bgrid">
+    <div class="ccard"><h3>Masse et plages de poids OMS</h3><div id="bcW"></div></div>
+    <div class="ccard"><h3>IMC</h3><div id="bcB"></div></div>
+    <div class="ccard"><h3>Composition (%)</h3><div id="bcC"></div><div class="muted" style="font-size:11px;margin-top:4px">Ces pourcentages se recoupent (l'eau est en partie dans le muscle) : leur somme ne fait pas 100 %.</div></div>
+    <div class="ccard"><h3>Masse grasse / non grasse (kg)</h3><div id="bcM"></div><div class="muted" style="font-size:11px;margin-top:4px">Calculé : masse × % de graisse. 30 dernières pesées de la période.</div></div>
+    <div class="ccard"><h3>Histogramme des pesées</h3><div id="bcH"></div><div id="bcMeal" style="margin-top:6px"></div></div>
+    <div class="ccard"><h3>Kcal affichées par la balance</h3><div id="bcK"></div></div>
+  </div>
+  <div class="ccard" id="bNorms"></div>
+  <div class="ccard"><h3>🗂 Pesées enregistrées</h3><div id="bList"></div></div>
+  <p class="muted" style="font-size:12px">L'impédancemétrie grand public donne des estimations : l'hydratation, l'heure, les repas et l'activité récente font varier les résultats. Ces informations ne remplacent pas un avis médical.</p>
+</section>
+
 <section class="view" id="v-chrono">
   <h2>Chronomètre</h2>
   <div class="card" style="margin-bottom:14px">
@@ -454,6 +514,15 @@ body.dragging,body.dragging *{user-select:none;-webkit-user-select:none;cursor:g
       <li><b>Échauffement :</b> le programme NHS demande au moins 6 minutes d'échauffement.</li>
       <li><b>Abdos – efficacité :</b> dans l'étude commandée par l'ACE à la San Diego State University (Francis & Davis, 2001, mesures EMG), le « bicycle » arrive 1er pour le grand droit de l'abdomen et 2e pour les obliques ; le crunch inversé arrive 3e pour les obliques.</li>
       <li><b>Fréquence :</b> le NHS recommande aux adultes au moins 150 min d'activité modérée par semaine et des exercices de renforcement au moins 2 fois par semaine.</li>
+    </ul>
+  </div>
+  <h2>Calories et composition corporelle</h2>
+  <div class="card" style="margin-bottom:14px">
+    <ul style="margin:0;padding-left:18px">
+      <li><b>Calories par MET :</b> kcal ≈ MET × masse (kg) × durée (h). Valeurs MET du <a href="https://pacompendium.com/" target="_blank" rel="noopener">2024 Adult Compendium of Physical Activities</a> (Herrmann et al., <i>J Sport Health Sci</i> 2024;13:6-12). Renforcement : seul le temps d'effort est compté — échauffement et dos 3,5 (code 02030), abdos/gainage 2,8 (02024), jambes et haut du corps 3,8 (02022), cardio 7,5 (02020), étirements 2,3 (02101). Marche, course et vélo : MET selon la vitesse moyenne en mouvement (codes 17xxx, 12xxx, 010xx) ; vélo électrique 6,0 / 4,0 / 6,8 selon l'assistance (01084 / 01088 / 01080).</li>
+      <li><b>Calories par fréquence cardiaque :</b> équation sans VO2max de Keytel et al., <i>J Sports Sci</i> 2005;23(3):289-97 (sexe, FC moyenne, poids, âge), utilisée quand la FC est mesurée. Elle a été établie sur des efforts aérobies réguliers (course, vélo) : pour du renforcement fractionné, elle est moins fiable.</li>
+      <li><b>Corpulence :</b> classification de l'IMC de l'OMS (adultes). <b>% de graisse :</b> Gallagher et al., <i>Am J Clin Nutr</i> 2000;72:694-701. <b>% d'eau :</b> repère d'une notice de fabricant (Laica), indicatif.</li>
+      <li><b>Limites :</b> ce sont des estimations de population, pas une mesure individuelle ; l'écart avec ta dépense réelle peut être important. Chaque impédancemètre a ses propres algorithmes : les valeurs de muscle et d'os ne sont pas comparées à une norme faute de table vérifiée pour Continental Edison.</li>
     </ul>
   </div>
   <h2>Limites</h2>
@@ -895,7 +964,7 @@ const PRESETS = [
 
 /* ================= PROFILS & STOCKAGE ================= */
 // Chaque profil (pseudonyme) a ses propres données : historique, séances, préférences, tableau de bord.
-const PKEYS=["history","programs","settings","dash","dashRun","dashBike"];
+const PKEYS=["history","programs","settings","dash","dashRun","dashBike","body"];
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
 const PROF={list:[],active:null};
 function profLoad(){const p=LS.get("coach.profiles",null);
@@ -1232,6 +1301,7 @@ function finish(){
   const nWork=P.steps.filter(s=>s.kind==="work").length;
   $("#pSumTxt").innerHTML=esc(P.prog.name)+"<br>Durée : <b>"+fmt(P.total)+"</b> · "+nWork+" blocs d'effort";
   const rec=sessionRecord(true),h=store.get("history",[]);h.unshift(rec);store.set("history",h.slice(0,500));
+  {const kc=kcalOf(rec);$("#pSumTxt").innerHTML+=kc?"<br>Dépense estimée : <b>≈ "+nf.format(kc.k)+" kcal</b> <span style='font-size:11px'>("+KM[kc.m]+")</span>":"<br><span style='font-size:12px'>Renseigne ton poids (onglet Corps) pour estimer les calories.</span>"}
   $("#pSumHr").innerHTML=rec.hr?'<div style="margin:6px 0"><span class="pillv"><i style="background:#e66767"></i>FC moy. <b>'+rec.hr.avg+'</b></span><span class="pillv">max <b>'+rec.hr.max+'</b></span><span class="muted">bpm</span></div>'+hrSpark(rec.hr.s,400,70):"";
   releaseWake();
 }
@@ -1259,7 +1329,7 @@ document.addEventListener("keydown",e=>{if(!$("#player").classList.contains("on"
 
 /* ================= ONGLETS ================= */
 function go(v){document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
-  document.querySelectorAll("section.view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));window.scrollTo(0,0);tipHide();if(v==="histo")renderHistory();if(v==="stats")renderStats();if(v==="run")renderRuns();if(v==="params")renderParams()}
+  document.querySelectorAll("section.view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));window.scrollTo(0,0);tipHide();if(v==="histo")renderHistory();if(v==="stats")renderStats();if(v==="run")renderRuns();if(v==="params")renderParams();if(v==="corps")renderBody()}
 document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>go(b.dataset.v));
 document.addEventListener("click",e=>{const a=e.target.closest("[data-goto]");if(a){e.preventDefault();go(a.dataset.goto)}});
 
@@ -1371,9 +1441,9 @@ $("#itStart").onclick=()=>openPlayer(itProg());
 document.addEventListener("click",e=>{const a=e.target.closest("[data-run]");if(a){e.preventDefault();openRun(+a.dataset.run)}});
 function renderHistory(){
   const h=store.get("history",[]);
-  $("#histTable").innerHTML=h.length?"<tr><th>Date</th><th>Séance</th><th>Durée</th><th>Séq.</th><th>❤ moy.</th><th></th></tr>"+h.map(x=>"<tr><td>"+new Date(x.d).toLocaleString("fr-FR",{dateStyle:"short",timeStyle:"short"})+"</td><td>"+(isOut(x)?'<a href="#" data-run="'+x.d+'">'+actIc(x)+" "+esc(actName(x))+" · "+fmtKm(x.dist)+" km</a>":esc(x.name))+"</td><td>"+fmt(x.sec)+"</td><td>"+(x.seq!==undefined?x.seq:"—")+"</td><td>"+(x.hr?x.hr.avg+" <span class='muted'>/ "+x.hr.max+"</span>":"—")+"</td><td>"+(x.full?"✅":"<span class='muted'>partielle</span>")+"</td></tr>").join(""):"<tr><td class='muted'>Aucune séance pour l'instant.</td></tr>";
+  $("#histTable").innerHTML=h.length?"<tr><th>Date</th><th>Séance</th><th>Durée</th><th>Séq.</th><th>❤ moy.</th><th>kcal*</th><th></th></tr>"+h.map(x=>"<tr><td>"+new Date(x.d).toLocaleString("fr-FR",{dateStyle:"short",timeStyle:"short"})+"</td><td>"+(isOut(x)?'<a href="#" data-run="'+x.d+'">'+actIc(x)+" "+esc(actName(x))+" · "+fmtKm(x.dist)+" km</a>":esc(x.name))+"</td><td>"+fmt(x.sec)+"</td><td>"+(x.seq!==undefined?x.seq:"—")+"</td><td>"+(x.hr?x.hr.avg+" <span class='muted'>/ "+x.hr.max+"</span>":"—")+"</td><td>"+kcalTxt(x)+"</td><td>"+(x.full?"✅":"<span class='muted'>partielle</span>")+"</td></tr>").join(""):"<tr><td class='muted'>Aucune séance pour l'instant.</td></tr>";
   const wk=Date.now()-7*864e5,tot=h.filter(x=>x.d>wk).reduce((a,x)=>a+x.sec,0);
-  $("#histTot").textContent=h.length?"7 derniers jours : "+fmt(tot)+" d'entraînement ("+h.filter(x=>x.d>wk).length+" séance(s))":"";
+  const kw=kcalSum(h.filter(x=>x.d>wk));$("#histTot").textContent=h.length?"7 derniers jours : "+fmt(tot)+" d'entraînement ("+h.filter(x=>x.d>wk).length+" séance(s))"+(kw.n?" · ≈ "+nf.format(kw.s)+" kcal":"")+" · *kcal estimées":"";
 }
 $("#histClear").onclick=e=>confirm2(e.currentTarget,()=>{store.set("history",[]);renderHistory()});
 
@@ -1685,12 +1755,179 @@ function demoRun(rnd,t,type){const lat0=45.7770,lon0=4.8540,R0=(type==="run"?700
   const smp=trk.filter((_,i)=>i%2===0).map(p=>[p[2],p[4]]),hr=hrSummary(smp,null);
   return {d:t,type,ebike:type==="bike"?eb:undefined,priv:0,name:eb?"Vélo électrique":RT[type].n,sec:Math.round(tt*1.04),mov:Math.round(tt),dist:Math.round(dist),gain:Math.round(gain),loss:Math.round(loss),full:true,seq:1,items:[{ex:eb?"ebike":type,sec:Math.round(tt),reps:0,seq:1,hrAvg:hr.avg,hrMax:hr.max}],trk,splits,gaps:0,elev:"gps",hr}}
 
+/* ================= CALORIES (estimation) ================= */
+// MET : 2024 Adult Compendium of Physical Activities (Herrmann et al., J Sport Health Sci 2024 ; pacompendium.com). [MET, code]
+const MET_Z={echauffement:[3.5,"02030"],abdos:[2.8,"02024"],dos:[3.5,"02030"],jambes:[3.8,"02022"],haut:[3.8,"02022"],cardio:[7.5,"02020"],etirements:[2.3,"02101"]};
+// [vitesse max exclue en mph, MET, code]
+const MET_WALK=[[2.0,2.3,"17151"],[2.5,2.8,"17152"],[2.8,3.0,"17170"],[3.5,3.8,"17190"],[4.0,4.8,"17200"],[4.5,5.5,"17220"],[5.0,7.0,"17230"],[99,8.5,"17231"]];
+const MET_RUN=[[4.3,6.5,"12028"],[5.0,7.8,"12029"],[5.5,8.5,"12030"],[6.0,9.0,"12045"],[6.5,9.3,"12050"],[6.85,10.5,"12060"],[7.25,11.0,"12070"],[7.75,11.8,"12080"],[8.3,12.0,"12090"],[8.8,12.5,"12100"],[9.15,13.0,"12110"],[10.5,14.8,"12120"],[11.5,16.8,"12130"],[12.5,18.5,"12132"],[13.5,19.8,"12134"],[99,23.0,"12135"]];
+const MET_BIKE=[[10,4.0,"01010"],[12,6.8,"01020"],[14,8.0,"01030"],[16,10.0,"01040"],[20,12.0,"01050"],[99,16.8,"01060"]];
+const MET_EB={none:[99,6.8,"01080"],light:[99,6.0,"01084"],high:[99,4.0,"01088"]};
+function bodyP(){settings.body=Object.assign({sex:"",h:0,by:0,kg:0,eb:"light",meth:"auto"},settings.body||{});return settings.body}
+function ageAt(t){const b=bodyP();return b.by?new Date(t).getFullYear()-b.by:0}
+function bodyAll(){return ST.demo?demoBody():store.get("body",[])}
+function kgAt(t){const e=bodyAll().filter(x=>x.kg>0).sort((a,b)=>a.ts-b.ts);let k=0;for(const x of e){if(x.ts<=t+DAY)k=x.kg;else break}
+  return k||bodyP().kg||(e.length?e[0].kg:0)}
+function metOut(x){if(x.type==="bike"&&x.ebike)return MET_EB[bodyP().eb]||MET_EB.light;const mph=kmh(x.dist,x.mov)/1.609344,T=x.type==="run"?MET_RUN:x.type==="bike"?MET_BIKE:MET_WALK;return T.find(r=>mph<r[0])||T[T.length-1]}
+// Renvoie {k: kcal, m:"fc"|"met"} ou null si le poids est inconnu
+function kcalOf(x){const kg=kgAt(x.d);if(!kg)return null;const b=bodyP(),age=ageAt(x.d);
+  if(b.meth!=="met"&&x.hr&&x.hr.avg&&(b.sex==="h"||b.sex==="f")&&age>=18){const hr=x.hr.avg,
+    ee=b.sex==="h"?-55.0969+0.6309*hr+0.1988*kg+0.2017*age:-20.4022+0.4472*hr-0.1263*kg+0.074*age; // Keytel et al. 2005, kJ/min
+    const min=(isOut(x)?(x.mov||x.sec):x.sec)/60;if(ee>0)return {k:Math.round(ee/4.184*min),m:"fc"}}
+  if(isOut(x)){if(!x.mov||!x.dist)return null;return {k:Math.round(metOut(x)[1]*kg*x.mov/3600),m:"met"}}
+  let k=0;(x.items||[]).forEach(it=>{const e=EX[it.ex],z=e&&MET_Z[e.z];if(z)k+=z[0]*kg*it.sec/3600});return {k:Math.round(k),m:"met"}}
+function kcalTxt(x){const c=kcalOf(x);return c?nf.format(c.k):"—"}
+const KM={fc:"FC (Keytel 2005)",met:"MET (Compendium 2024)"};
+
+/* ================= CORPS : NORMES ================= */
+// IMC – classification de l'OMS (adultes)
+const BMI_N=[[0,18.5,"Insuffisance pondérale","#5598e7"],[18.5,25,"Corpulence normale","#0ca30c"],[25,30,"Surpoids","#c98500"],[30,35,"Obésité (classe I)","#e66767"],[35,40,"Obésité (classe II)","#e66767"],[40,99,"Obésité (classe III)","#e66767"]];
+function bmiOf(kg){const h=bodyP().h/100;return h>0&&kg?kg/(h*h):0}
+function bmiCat(v){return BMI_N.find(r=>v>=r[0]&&v<r[1])}
+// % de graisse – Gallagher et al. 2000 (Am J Clin Nutr 72:694), seuils [bas<a, normal<b, élevé<c, très élevé≥c]
+const FAT_N={f:[[20,39,21,33,39],[40,59,23,34,40],[60,79,24,36,42]],h:[[20,39,8,20,25],[40,59,11,22,28],[60,79,13,25,30]]};
+const FAT_L=[["Bas","#5598e7"],["Normal","#0ca30c"],["Élevé","#c98500"],["Très élevé","#e66767"]];
+function fatRow(sex,age){return (FAT_N[sex]||[]).find(r=>age>=r[0]&&age<=r[1])}
+function fatCat(p,sex,age){const r=fatRow(sex,age);if(!r||!p)return null;return FAT_L[p<r[2]?0:p<r[3]?1:p<r[4]?2:3]}
+// % d'eau – repère d'un fabricant de balances (notice Laica PS0875), à titre indicatif
+const WAT_N={f:[45,60],h:[50,65]};
+function watCat(p,sex){const r=WAT_N[sex];if(!r||!p)return null;return p<r[0]?["Sous le repère","#c98500"]:p>r[1]?["Au-dessus du repère","#c98500"]:["Dans le repère","#0ca30c"]}
+function tagC(l){return l?'<span class="tagc" style="--c:'+l[1]+'">'+l[0]+'</span>':'<span class="muted">—</span>'}
+
+/* ================= CORPS : SAISIE & SUIVI ================= */
+const BST={period:90,edit:null};
+const BF=[["kg","Masse","kg",20,300,1],["bone","Os","%",0,100,1],["fat","Graisse","%",0,100,1],["water","Eau","%",0,100,1],["muscle","Muscle","%",0,100,1],["kcal","Kcal","kcal",0,10000,0]];
+function demoBody(){const out=[];let s=7;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;const now=Date.now();
+  for(let i=120;i>=0;i-=3){const t=startOfDay(now-i*DAY)+7.5*36e5,tr=i/120,kg=+(78.5+3*tr+(rnd()-.5)*0.8).toFixed(1),fat=+(21+3*tr+(rnd()-.5)*0.8).toFixed(1);
+    out.push({id:"d"+i,ts:t,meal:"avant",kg,bone:+(4.1+(rnd()-.5)*0.1).toFixed(1),fat,water:+(55.5-0.6*(fat-21)+(rnd()-.5)*0.6).toFixed(1),muscle:+(38.5-0.3*(fat-21)+(rnd()-.5)*0.5).toFixed(1),kcal:Math.round(1750+10*(kg-78))})}
+  return out.sort((a,b)=>b.ts-a.ts)}
+function bodyIn(){const a=bodyAll().slice().sort((x,y)=>y.ts-x.ts);if(!BST.period)return a;const t0=Date.now()-BST.period*DAY;return a.filter(x=>x.ts>=t0)}
+const dfmt=t=>new Date(t).toLocaleDateString("fr-FR",{day:"numeric",month:"short"}),dfmtL=t=>new Date(t).toLocaleString("fr-FR",{weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"});
+const n1=v=>v===undefined||v===null||v===""?"—":String(Math.round(v*10)/10).replace(".",",");
+function pad2(n){return String(n).padStart(2,"0")}
+function bFormReset(){const d=new Date();BST.edit=null;$("#bDate").value=d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate());$("#bTime").value=pad2(d.getHours())+":"+pad2(d.getMinutes());
+  $("#bMeal").value="";BF.forEach(f=>$("#bf_"+f[0]).value="");$("#bdSave").textContent="Enregistrer la pesée";$("#bdCancel").style.display="none"}
+function bFormLoad(e){BST.edit=e.id;const d=new Date(e.ts);$("#bDate").value=d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate());$("#bTime").value=pad2(d.getHours())+":"+pad2(d.getMinutes());
+  $("#bMeal").value=e.meal||"";BF.forEach(f=>$("#bf_"+f[0]).value=e[f[0]]??"");$("#bdSave").textContent="Mettre à jour";$("#bdCancel").style.display="";$("#bForm").scrollIntoView({behavior:"smooth",block:"center"})}
+function bSave(){if(ST.demo){toast("Mode exemple : reviens à tes données pour saisir.");return}
+  const ds=$("#bDate").value,tm=$("#bTime").value||"08:00";if(!ds){toast("Indique la date.");return}const ts=new Date(ds+"T"+tm).getTime();if(!ts){toast("Date ou heure invalide.");return}
+  const e={id:BST.edit||("b"+Date.now().toString(36)),ts,meal:$("#bMeal").value};
+  for(const [k,l,u,mi,ma,req] of BF){const raw=$("#bf_"+k).value.trim().replace(",",".");if(!raw){if(req){toast(l+" : valeur obligatoire.");return}continue}
+    const v=parseFloat(raw);if(!(v>=mi&&v<=ma)){toast(l+" : entre "+mi+" et "+ma+" "+u+".");return}e[k]=k==="kcal"?Math.round(v):Math.round(v*10)/10}
+  const a=store.get("body",[]).filter(x=>x.id!==e.id);a.push(e);a.sort((x,y)=>y.ts-x.ts);store.set("body",a);toast(BST.edit?"Pesée mise à jour":"Pesée enregistrée");bFormReset();renderBody()}
+function bProfUI(){const b=bodyP();$("#bSex").value=b.sex;$("#bH").value=b.h||"";$("#bBy").value=b.by||"";$("#bKg").value=b.kg||"";$("#bEb").value=b.eb;$("#bMeth").value=b.meth;
+  const miss=[!b.sex&&"sexe",!b.h&&"taille",!b.by&&"année de naissance"].filter(Boolean);
+  $("#bProfHint").innerHTML=miss.length?"⚠ À compléter : "+miss.join(", ")+". "+(miss.includes("taille")?"Sans taille, pas d'IMC. ":"")+(miss.includes("sexe")||miss.includes("année de naissance")?"Sans sexe ni âge, pas de norme de % de graisse ni de calcul cardio des calories.":""):"Profil complet : âge actuel "+ageAt(Date.now())+" ans."}
+function bodyNow(){const a=bodyAll().slice().sort((x,y)=>y.ts-x.ts),el=$("#bNow"),b=bodyP();
+  if(!a.length){el.innerHTML='<h3>📋 Dernière pesée</h3><div class="muted">Aucune pesée enregistrée. Saisis les valeurs affichées par ta balance ci-dessus.</div>';return}
+  const e=a[0],p=a[1],age=ageAt(e.ts),bmi=bmiOf(e.kg),bc=bmi?bmiCat(bmi):null,fr=fatRow(b.sex,age);
+  const dl=(k,u)=>p&&e[k]!==undefined&&p[k]!==undefined?'<div class="bd">'+(e[k]-p[k]===0?"= préc.":(e[k]>p[k]?"▲ +":"▼ −")+n1(Math.abs(e[k]-p[k]))+' '+u)+'</div>':"";
+  const cell=(l,v,u,k,q)=>'<div class="bcell"><div class="bl">'+l+'</div><div class="bv">'+v+'<small> '+u+'</small></div>'+(k?dl(k,u):"")+(q!==undefined?'<div>'+q+'</div>':"")+'</div>';
+  el.innerHTML='<h3>📋 Dernière pesée <span class="muted" style="font-size:13px;font-weight:400">'+dfmtL(e.ts)+(e.meal?' · '+(e.meal==="avant"?"avant":"après")+' repas':'')+'</span></h3><div class="bcells">'+
+    cell("Masse",n1(e.kg),"kg","kg")+cell("IMC",bmi?n1(bmi):"—","kg/m²","",bmi?tagC([bc[2],bc[3]]):'<span class="muted" style="font-size:12px">taille manquante</span>')+
+    cell("Graisse",n1(e.fat),"%","fat",e.fat!==undefined?(fr?tagC(fatCat(e.fat,b.sex,age)):'<span class="muted" style="font-size:12px">'+(b.sex&&age?"âge hors table (20–79 ans)":"sexe/âge manquant")+'</span>'):undefined)+
+    cell("Eau",n1(e.water),"%","water",e.water!==undefined?(b.sex?tagC(watCat(e.water,b.sex)):'<span class="muted" style="font-size:12px">sexe manquant</span>'):undefined)+
+    cell("Muscle",n1(e.muscle),"%","muscle",e.muscle!==undefined?'<span class="muted" style="font-size:12px">pas de norme vérifiée</span>':undefined)+
+    cell("Os",n1(e.bone),"%","bone",e.bone!==undefined?'<span class="muted" style="font-size:12px">pas de norme vérifiée</span>':undefined)+
+    cell("Kcal (balance)",e.kcal!==undefined?nf.format(e.kcal):"—","kcal","kcal")+
+    (e.fat!==undefined?cell("Masse grasse",n1(e.kg*e.fat/100),"kg")+cell("Masse non grasse",n1(e.kg*(1-e.fat/100)),"kg"):"")+'</div>'+
+    (bmi&&b.h?'<div class="muted" style="font-size:12px;margin-top:8px">Pour '+b.h+' cm, la corpulence « normale » de l\'OMS (IMC 18,5–24,9) correspond à '+n1(18.5*(b.h/100)**2)+' – '+n1(24.9*(b.h/100)**2)+' kg.</div>':"")}
+/* Barres empilées génériques : cols=[{t,v:{k:val}}], SER=[[k,libellé,couleur]] */
+function stackBars(el,cols,SER,o){const W=Math.max(260,el.clientWidth),H=o.h||200,m={l:40,r:8,t:14,b:26},iw=W-m.l-m.r,ih=H-m.t-m.b,n=cols.length;
+  const tot=c=>SER.reduce((a,[k])=>a+(c.v[k]||0),0),ax=niceAxis(Math.max(o.min||1,...cols.map(tot))),Y=v=>m.t+ih-v/ax.max*ih,gap=iw/n,bw=Math.min(o.bw||26,gap*.66);
+  let g="";for(let v=0;v<=ax.max+1e-9;v+=ax.step){const y=Y(v);g+='<line x1="'+m.l+'" x2="'+(W-m.r)+'" y1="'+y+'" y2="'+y+'" class="grid"/><text x="'+(m.l-6)+'" y="'+(y+4)+'" class="ax" text-anchor="end">'+nf.format(Math.round(v*10)/10)+'</text>'}
+  g+='<text x="'+m.l+'" y="10" class="ax">'+o.unit+'</text>';
+  cols.forEach((c,i)=>{const x=m.l+i*gap+(gap-bw)/2;let y0=m.t+ih;const segs=SER.filter(([k])=>c.v[k]>0);
+    segs.forEach(([k,,col],j)=>{const h=c.v[k]/ax.max*ih,top=j===segs.length-1;g+='<rect x="'+x+'" y="'+(y0-h)+'" width="'+bw+'" height="'+Math.max(0,h-(j>0?2:0))+'"'+(top?' rx="'+Math.min(3,bw/2)+'"':'')+' fill="'+col+'" class="grow"/>';y0-=h});
+    g+='<rect x="'+(m.l+i*gap)+'" y="'+m.t+'" width="'+gap+'" height="'+ih+'" fill="transparent" class="hitw" data-i="'+i+'"/>';
+    if(n<=10||i%Math.ceil(n/8)===0)g+='<text x="'+(x+bw/2)+'" y="'+(H-8)+'" class="ax" text-anchor="middle">'+o.xl(c)+'</text>'});
+  el.innerHTML=(SER.length>1?'<div class="lgrow">'+SER.map(([,l,col])=>'<span class="lgi"><i style="background:'+col+'"></i>'+l+'</span>').join("")+'</div>':"")+SV(W,H,g);
+  el.querySelectorAll(".hitw").forEach(h=>{const c=cols[+h.dataset.i],on=ev=>tipShow('<b>'+o.tt(c)+'</b>'+SER.map(([k,l,col])=>'<div class="tl"><i style="background:'+col+'"></i>'+l+'<span>'+o.vf(c.v[k]||0)+'</span></div>').join(""),ev);
+    h.addEventListener("pointermove",on);h.addEventListener("pointerdown",on);h.addEventListener("pointerleave",tipHide)})}
+const XF={xfmt:t=>dfmt(t),tfmt:t=>dfmtL(t)};
+function bChart(id,fn){const el=$("#"+id);try{fn(el)}catch(e){console.error(e);el.innerHTML='<div class="muted empty-s">Erreur d\'affichage.</div>'}}
+const BEMPTY='<div class="muted empty-s">Il faut au moins 2 pesées sur la période.</div>';
+function chartWeight(el,a,bands){const p=a.filter(x=>x.kg).slice().reverse();if(p.length<2){el.innerHTML=BEMPTY;return}const b=bodyP(),h2=(b.h/100)**2;
+  const mn=Math.min(...p.map(x=>x.kg)),mx=Math.max(...p.map(x=>x.kg));
+  lineChart(el,[{name:"Masse",color:"#3987e5",pts:p.map(x=>[x.ts,x.kg])}],Object.assign({h:220,unit:"kg",dots:p.length<=30,ymin:Math.floor(mn-3),yfmt:v=>nf.format(v),vfmt:v=>n1(v)+" kg"+(h2?" · IMC "+n1(v/h2):""),
+    bands:bands&&h2?BMI_N.slice(0,4).map(r=>({from:r[0]*h2,to:Math.min(r[1],99)*h2,c:r[3],l:r[2]})):[]},XF))}
+function chartBMI(el,a){const h2=(bodyP().h/100)**2;if(!h2){el.innerHTML='<div class="muted empty-s">Renseigne ta taille pour calculer l\'IMC.</div>';return}
+  const p=a.filter(x=>x.kg).slice().reverse();if(p.length<2){el.innerHTML=BEMPTY;return}const v=p.map(x=>x.kg/h2);
+  lineChart(el,[{name:"IMC",color:"#3987e5",pts:p.map((x,i)=>[x.ts,Math.round(v[i]*10)/10])}],Object.assign({h:220,unit:"kg/m²",dots:p.length<=30,ymin:Math.max(10,Math.floor(Math.min(...v,18.5)-2)),yfmt:v=>nf.format(v),
+    vfmt:v=>n1(v)+" · "+bmiCat(v)[2],bands:BMI_N.slice(0,4).map(r=>({from:r[0],to:r[1],c:r[3],l:r[2]}))},XF))}
+const CSER=[["fat","Graisse","#3987e5"],["water","Eau","#d95926"],["muscle","Muscle","#199e70"],["bone","Os","#c98500"]];
+function chartCompo(el,a){const p=a.slice().reverse(),ser=CSER.filter(([k])=>p.filter(x=>x[k]!==undefined).length>=2);if(!ser.length){el.innerHTML=BEMPTY;return}
+  el.innerHTML='<div class="lgrow">'+ser.map(([,l,c])=>'<span class="lgi"><i style="background:'+c+'"></i>'+l+'</span>').join("")+'</div><div class="cbody"></div>';
+  lineChart(el.querySelector(".cbody"),ser.map(([k,l,c])=>({name:l,color:c,pts:p.filter(x=>x[k]!==undefined).map(x=>[x.ts,x[k]])})),Object.assign({h:240,unit:"%",ymin:0,dots:p.length<=20,yfmt:v=>nf.format(v),vfmt:v=>n1(v)+" %"},XF))}
+function chartMass(el,a){const p=a.filter(x=>x.kg&&x.fat!==undefined).slice(0,30).reverse();if(!p.length){el.innerHTML='<div class="muted empty-s">Saisis la masse et le % de graisse.</div>';return}
+  stackBars(el,p.map(x=>({t:x.ts,v:{lean:x.kg*(1-x.fat/100),fat:x.kg*x.fat/100},kg:x.kg})),[["lean","Masse non grasse","#3987e5"],["fat","Masse grasse","#d95926"]],
+    {unit:"kg",h:220,xl:c=>new Date(c.t).toLocaleDateString("fr-FR",{day:"numeric",month:"numeric"}),tt:c=>dfmtL(c.t)+" · "+n1(c.kg)+" kg",vf:v=>n1(v)+" kg"})}
+function chartHist(el,a){const p=a.filter(x=>x.kg);if(p.length<3){el.innerHTML='<div class="muted empty-s">Il faut au moins 3 pesées sur la période.</div>';return}
+  const mn=Math.min(...p.map(x=>x.kg)),mx=Math.max(...p.map(x=>x.kg)),st=mx-mn>12?1:0.5,lo=Math.floor(mn/st)*st,nb=Math.max(1,Math.floor((mx-lo)/st)+1),cols=[];
+  for(let i=0;i<nb;i++)cols.push({t:lo+i*st,v:{n:0}});p.forEach(x=>cols[Math.min(nb-1,Math.floor((x.kg-lo)/st+1e-9))].v.n++);
+  stackBars(el,cols,[["n","Pesées","#3987e5"]],{unit:"pesées",h:200,bw:40,min:4,xl:c=>n1(c.t),tt:c=>n1(c.t)+" – "+n1(c.t+st)+" kg",vf:v=>v+" pesée"+(v>1?"s":"")})}
+function chartKcal(el,a){const p=a.filter(x=>x.kcal).slice().reverse();if(p.length<2){el.innerHTML=BEMPTY;return}
+  lineChart(el,[{name:"Kcal (balance)",color:"#3987e5",pts:p.map(x=>[x.ts,x.kcal])}],Object.assign({h:200,unit:"kcal",dots:p.length<=30,yfmt:v=>nf.format(v),vfmt:v=>nf.format(v)+" kcal",ymin:Math.floor(Math.min(...p.map(x=>x.kcal))/100)*100-100},XF))}
+function mealCmp(a){const av=a.filter(x=>x.meal==="avant"&&x.kg),ap=a.filter(x=>x.meal==="apres"&&x.kg),m=x=>sumBy(x,y=>y.kg)/x.length;
+  return '<div class="muted" style="font-size:13px">'+(av.length?'Avant repas : <b>'+n1(m(av))+' kg</b> en moyenne ('+av.length+')':'Aucune pesée « avant repas »')+' · '+(ap.length?'Après repas : <b>'+n1(m(ap))+' kg</b> ('+ap.length+')':'aucune « après repas »')+
+  '. Pour comparer dans le temps, pèse-toi dans les mêmes conditions (même moment, même situation par rapport aux repas).</div>'}
+function renderNorms(){const b=bodyP(),age=ageAt(Date.now()),h2=(b.h/100)**2;
+  const bmiT='<table class="ntab"><tr><th>IMC (kg/m²)</th><th>Classification OMS</th>'+(h2?'<th>Pour '+b.h+' cm</th>':'')+'</tr>'+BMI_N.map(r=>'<tr><td>'+(r[0]?(r[1]<99?n1(r[0])+" – "+n1(r[1]-0.1):"≥ "+r[0]):"< 18,5")+'</td><td>'+tagC([r[2],r[3]])+'</td>'+(h2?'<td>'+(r[0]?(r[1]<99?n1(r[0]*h2)+" – "+n1((r[1]-0.1)*h2):"≥ "+n1(r[0]*h2)):"< "+n1(18.5*h2))+' kg</td>':'')+'</tr>').join("")+'</table>';
+  const fatT='<table class="ntab"><tr><th>Sexe</th><th>Âge</th>'+FAT_L.map(l=>'<th>'+tagC(l)+'</th>').join("")+'</tr>'+["f","h"].map(s=>FAT_N[s].map((r,i)=>{const me=s===b.sex&&age>=r[0]&&age<=r[1];
+    return '<tr'+(me?' class="me"':'')+'><td>'+(i?"":s==="f"?"Femme":"Homme")+'</td><td>'+r[0]+'–'+r[1]+' ans'+(me?" ◀":"")+'</td><td>< '+r[2]+'</td><td>'+r[2]+' – '+(r[3]-0.1).toFixed(1).replace(".",",")+'</td><td>'+r[3]+' – '+(r[4]-0.1).toFixed(1).replace(".",",")+'</td><td>≥ '+r[4]+'</td></tr>'}).join("")).join("")+'</table>';
+  $("#bNorms").innerHTML='<h3>📏 Table des normes</h3><div class="ngrid"><div><h4>Corpulence (IMC)</h4>'+bmiT+'<div class="nsrc">Source : classification OMS de l\'IMC chez l\'adulte (identique pour les deux sexes, indépendante de l\'âge). L\'IMC ne distingue pas graisse et muscle.</div></div>'+
+    '<div><h4>% de graisse corporelle</h4>'+fatT+'<div class="nsrc">Source : Gallagher et al., <i>Am J Clin Nutr</i> 2000;72:694-701 (plages dérivées des seuils IMC NIH/OMS), table reprise notamment par Omron. Mesures de référence DXA/modèle 4 compartiments, pas par balance.</div></div>'+
+    '<div><h4>% d\'eau</h4><table class="ntab"><tr><th>Sexe</th><th>Repère</th></tr><tr><td>Femme</td><td>45 – 60 %</td></tr><tr><td>Homme</td><td>50 – 65 %</td></tr></table><div class="nsrc">Source : notice d\'un fabricant de balances impédancemètres (Laica PS0875). Repère indicatif : <b>je ne peux pas confirmer</b> qu\'il corresponde à l\'algorithme Continental Edison.</div></div>'+
+    '<div><h4>% de muscle et % d\'os</h4><div class="nsrc" style="margin-top:0">Pas de table affichée : chaque balance calcule ces valeurs avec ses propres algorithmes et référentiels (Decathlon le rappelle pour ses impédancemètres), et je n\'ai pas pu consulter la notice Continental Edison. <b>Je ne peux pas confirmer</b> de norme pour ces deux valeurs : réfère-toi au tableau de ta notice et suis surtout leur évolution.</div></div></div>'}
+function renderBody(){bProfUI();bodyNow();renderNorms();
+  document.querySelectorAll("#bPeriod .chip").forEach(c=>c.classList.toggle("on",+c.dataset.p===BST.period));
+  $("#bDemoBanner").style.display=ST.demo?"":"none";
+  const a=bodyIn();
+  bChart("bcW",el=>chartWeight(el,a,true));bChart("bcB",el=>chartBMI(el,a));bChart("bcC",el=>chartCompo(el,a));bChart("bcM",el=>chartMass(el,a));bChart("bcH",el=>chartHist(el,a));bChart("bcK",el=>chartKcal(el,a));
+  $("#bcMeal").innerHTML=mealCmp(a);
+  const all=bodyAll().slice().sort((x,y)=>y.ts-x.ts);
+  $("#bList").innerHTML=all.length?'<div class="tscroll"><table><tr><th>Date</th><th>Repas</th><th>Masse</th><th>IMC</th><th>Os %</th><th>Graisse %</th><th>Eau %</th><th>Muscle %</th><th>Kcal</th><th></th></tr>'+all.map(e=>{const bm=bmiOf(e.kg);
+    return '<tr data-id="'+e.id+'"><td>'+new Date(e.ts).toLocaleString("fr-FR",{dateStyle:"short",timeStyle:"short"})+'</td><td>'+(e.meal==="avant"?"avant":e.meal==="apres"?"après":"—")+'</td><td>'+n1(e.kg)+'</td><td>'+(bm?n1(bm):"—")+'</td><td>'+n1(e.bone)+'</td><td>'+n1(e.fat)+'</td><td>'+n1(e.water)+'</td><td>'+n1(e.muscle)+'</td><td>'+(e.kcal??"—")+'</td><td style="white-space:nowrap">'+(ST.demo?"":'<button class="small" data-a="ed">✎</button> <button class="small ghost" data-a="del">✕</button>')+'</td></tr>'}).join("")+'</table></div>':'<div class="muted">Aucune pesée.</div>';
+  $("#bList").querySelectorAll("tr[data-id]").forEach(r=>{const id=r.dataset.id,e=all.find(x=>x.id===id),ed=r.querySelector('[data-a=ed]'),dl=r.querySelector('[data-a=del]');
+    if(ed)ed.onclick=()=>bFormLoad(e);if(dl)dl.onclick=ev=>confirm2(ev.currentTarget,()=>{store.set("body",store.get("body",[]).filter(x=>x.id!==id));if(BST.edit===id)bFormReset();renderBody()})})}
+function bodyBind(){
+  const pf=(id,fn)=>$("#"+id).onchange=e=>{fn(bodyP(),e.target.value);saveSettings();renderBody()};
+  pf("bSex",(b,v)=>b.sex=v);pf("bEb",(b,v)=>b.eb=v);pf("bMeth",(b,v)=>b.meth=v);
+  pf("bH",(b,v)=>{const n=parseInt(v);b.h=n>=100&&n<=250?n:0;if(v&&!b.h)toast("Taille entre 100 et 250 cm.")});
+  pf("bBy",(b,v)=>{const n=parseInt(v),y=new Date().getFullYear();b.by=n>=y-110&&n<=y-10?n:0;if(v&&!b.by)toast("Année de naissance invalide.")});
+  pf("bKg",(b,v)=>{const n=parseFloat(String(v).replace(",","."));b.kg=n>=20&&n<=300?Math.round(n*10)/10:0;if(v&&!b.kg)toast("Poids entre 20 et 300 kg.")});
+  $("#bdSave").onclick=bSave;$("#bdCancel").onclick=bFormReset;
+  document.querySelectorAll("#bPeriod .chip").forEach(c=>c.onclick=()=>{BST.period=+c.dataset.p;renderBody()});
+  $("#bDemoOff").onclick=()=>{ST.demo=false;renderBody()};
+  let rt=0;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{if($("#v-corps").classList.contains("on"))renderBody()},200)})}
+
+/* ---- Tuiles calories & corps ---- */
+function kcalSum(h){let s=0,n=0;h.forEach(x=>{const c=kcalOf(x);if(c){s+=c.k;n++}});return {s,n}}
+function noKg(el){el.innerHTML='<div class="muted empty-s">Renseigne ton poids (onglet <a href="#" data-goto="corps">Corps</a>) pour estimer les calories.</div>'}
+function noBody(el){el.innerHTML='<div class="muted empty-s">Aucune pesée sur cette période.<br><a href="#" data-goto="corps">Saisir une pesée</a></div>'}
+function bodyPer(){const a=bodyAll().slice().sort((x,y)=>y.ts-x.ts);if(!ST.period)return a;const t0=Date.now()-ST.period*DAY;return a.filter(x=>x.ts>=t0)}
+Object.assign(TILES,{
+ k_kcal:{t:"Calories dépensées",s:1,d:"Estimation (MET du Compendium 2024, ou FC via Keytel 2005)",r(el,c){if(!c.cur.length){el.innerHTML='<div class="muted empty-s">Aucune activité.</div>';return}const k=kcalSum(c.cur);if(!k.n)return noKg(el);
+   const fc=c.cur.filter(x=>{const q=kcalOf(x);return q&&q.m==="fc"}).length;kpiTile(el,nf.format(k.s)+'<small class="u"> kcal</small>',"estimation · "+k.n+" activité"+(k.n>1?"s":"")+(fc?" · "+fc+" via FC":""),k.s,kcalSum(c.prev).s)}},
+ c_kcalw:{t:"Calories par semaine",s:2,d:"Barres empilées renforcement / sorties (estimation)",r(el,c){if(!c.cur.length){el.innerHTML='<div class="muted empty-s">Aucune activité.</div>';return}if(!kcalSum(c.cur).n)return noKg(el);
+   const now=weekStart(Date.now()),first=weekStart(Math.min(...c.cur.map(x=>x.d))),n=Math.min(26,Math.round((now-first)/(7*DAY))+1),wk=[];
+   for(let i=n-1;i>=0;i--){const s=startOfDay(now-i*7*DAY+12*36e5),e=s+7*DAY,o={t:s,v:{ren:0,out:0}};c.cur.filter(x=>x.d>=s&&x.d<e).forEach(x=>{const q=kcalOf(x);if(q)o.v[isOut(x)?"out":"ren"]+=q.k});wk.push(o)}
+   stackBars(el,wk,[["ren","Renforcement","#3987e5"],["out","Sorties","#d95926"]],{unit:"kcal",h:200,xl:w=>new Date(w.t).toLocaleDateString("fr-FR",{day:"numeric",month:"numeric"}),tt:w=>"Semaine du "+new Date(w.t).toLocaleDateString("fr-FR",{day:"numeric",month:"long"}),vf:v=>nf.format(Math.round(v))+" kcal"})}},
+ k_weight:{t:"Masse corporelle",s:1,body:1,d:"Dernière pesée, IMC et évolution sur la période",r(el,c){const a=bodyPer().filter(x=>x.kg);if(!a.length)return noBody(el);const e=a[0],o=a[a.length-1],bm=bmiOf(e.kg);
+   kpiTile(el,n1(e.kg)+'<small class="u"> kg</small>',(bm?"IMC "+n1(bm)+" · "+bmiCat(bm)[2]+" · ":"")+dfmt(e.ts),a.length>1?Math.round(e.kg*10)/10:undefined,a.length>1?Math.round(o.kg*10)/10:undefined,v=>n1(v)+" kg")}},
+ k_fat:{t:"% de graisse",s:1,body:1,d:"Dernière valeur de la balance et norme (Gallagher 2000)",r(el,c){const a=bodyPer().filter(x=>x.fat!==undefined);if(!a.length)return noBody(el);const e=a[0],b=bodyP(),fc=fatCat(e.fat,b.sex,ageAt(e.ts));
+   kpiTile(el,n1(e.fat)+'<small class="u"> %</small>',(fc?fc[0]+" (Gallagher) · ":"")+dfmt(e.ts),a.length>1?e.fat:undefined,a.length>1?a[a.length-1].fat:undefined,v=>n1(v)+" pt")}},
+ c_weight:{t:"Courbe de masse",s:2,body:1,d:"Masse au fil des pesées, avec les plages de poids OMS pour ta taille",r(el,c){const a=bodyPer();if(!a.length)return noBody(el);chartWeight(el,a,true)}},
+ c_compo:{t:"Composition corporelle",s:2,body:1,d:"% graisse, eau, muscle, os au fil des pesées",r(el,c){const a=bodyPer();if(!a.length)return noBody(el);chartCompo(el,a)}}
+});
+
 const TILE_ORDER=Object.keys(TILES);
 function defaultLayout(){const hr=hrCfg().on||store.get("history",[]).some(x=>x.hr);
   const base=["k_ses","k_time","k_seq","k_streak"],hrk=["k_hravg","k_hrmax","k_rec","k_hrhigh"];
   const charts=hr?["c_time","c_hr","c_seq","c_zones","c_ex","c_hrzones","c_hrex","c_hrtrend","c_hrrec","c_heat"]:["c_time","c_seq","c_zones","c_ex","c_heat"];
   const H0=store.get("history",[]),runs=H0.some(isOut)?["k_dist","k_pace"].concat(H0.some(x=>x.type==="bike")?["k_speed"]:[],["k_elev","c_lastrun","c_distw","c_pacew","c_records"]):[];
-  return base.concat(hr?hrk:[]).concat(charts.slice(0,1),runs,charts.slice(1)).map(id=>({id,s:TILES[id].s}))}
+  const kc=["c_kcalw","k_kcal"].concat(store.get("body",[]).length?["k_weight","c_weight","c_compo"]:[]);
+  return base.concat(hr?hrk:[]).concat(charts.slice(0,1),runs,kc,charts.slice(1)).map(id=>({id,s:TILES[id].s}))}
 const DASH={layout:null,edit:false};
 function dashLayout(){if(!DASH.layout){const l=store.get("dash",null);DASH.layout=(Array.isArray(l)?l.filter(x=>TILES[x.id]):null)||defaultLayout()}return DASH.layout}
 function dashSave(){store.set("dash",DASH.layout)}
@@ -1715,7 +1952,7 @@ function renderStats(){
 function renderCatalog(){const box=$("#dashCat");if(!DASH.edit){box.style.display="none";return}box.style.display="";
   const used=new Set(dashLayout().map(x=>x.id));
   box.innerHTML='<div class="row" style="margin-bottom:8px"><b>Tuiles disponibles</b><span class="spacer"></span><button class="small ghost" id="dashReset">Réinitialiser</button></div><div class="catgrid">'+
-   TILE_ORDER.map(id=>{const d=TILES[id];return '<div class="cat'+(used.has(id)?" used":"")+'"><div><b>'+(d.hr?"❤ ":d.run?"🏃 ":"")+esc(d.t)+'</b><div class="muted" style="font-size:12px">'+esc(d.d)+'</div></div><button class="small'+(used.has(id)?" ghost":" primary")+'" data-add="'+id+'">'+(used.has(id)?"Affichée ✓":"+ Ajouter")+'</button></div>'}).join("")+'</div>';
+   TILE_ORDER.map(id=>{const d=TILES[id];return '<div class="cat'+(used.has(id)?" used":"")+'"><div><b>'+(d.hr?"❤ ":d.run?"🏃 ":d.body?"⚖ ":"")+esc(d.t)+'</b><div class="muted" style="font-size:12px">'+esc(d.d)+'</div></div><button class="small'+(used.has(id)?" ghost":" primary")+'" data-add="'+id+'">'+(used.has(id)?"Affichée ✓":"+ Ajouter")+'</button></div>'}).join("")+'</div>';
   box.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>{const id=b.dataset.add;if(used.has(id)){const el=$('#dash .t[data-id="'+id+'"]');el&&el.scrollIntoView({behavior:"smooth",block:"center"});return}
     DASH.layout.push({id,s:TILES[id].s});dashSave();renderStats();setTimeout(()=>{const el=$('#dash .t[data-id="'+id+'"]');el&&el.scrollIntoView({behavior:"smooth",block:"center"})},50)});
   $("#dashReset").onclick=e=>confirm2(e.currentTarget,()=>{DASH.layout=defaultLayout();dashSave();renderStats()});
@@ -1766,8 +2003,8 @@ function exportData(){const c=ST.ctx||statsCtx(),cur=c.cur.slice().sort((a,b)=>a
 const d2=t=>new Date(t).toLocaleDateString("fr-FR"),h2=t=>new Date(t).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
 const r1=v=>Math.round(v*10)/10;
 function tables(D){
-  const ses=[["Date","Heure","Type","Séance","Durée (min)","Terminée","Séquences","Distance (km)","Allure (min/km)","Vitesse moy. (km/h)","D+ (m)","FC moy. (bpm)","FC max (bpm)","FC min (bpm)","Récupération (bpm)"]].concat(
-    D.cur.map(x=>{const o=isOut(x);return [d2(x.d),h2(x.d),o?actName(x):"Renforcement",o?actName(x)+(x.priv?" (incognito)":""):x.name,r1(x.sec/60),x.full?"oui":"non",x.seq??"",o?Math.round(x.dist/10)/100:"",o&&x.type!=="bike"?fmtPace(x.mov/(x.dist/1000)):"",o?r1(kmh(x.dist,x.mov)):"",o?x.gain:"",x.hr?x.hr.avg:"",x.hr?x.hr.max:"",x.hr?x.hr.min:"",x.hr&&x.hr.rec!==undefined?x.hr.rec:""]}));
+  const ses=[["Date","Heure","Type","Séance","Durée (min)","Terminée","Séquences","Distance (km)","Allure (min/km)","Vitesse moy. (km/h)","D+ (m)","FC moy. (bpm)","FC max (bpm)","FC min (bpm)","Récupération (bpm)","Calories estimées (kcal)","Méthode calories"]].concat(
+    D.cur.map(x=>{const o=isOut(x);return [d2(x.d),h2(x.d),o?actName(x):"Renforcement",o?actName(x)+(x.priv?" (incognito)":""):x.name,r1(x.sec/60),x.full?"oui":"non",x.seq??"",o?Math.round(x.dist/10)/100:"",o&&x.type!=="bike"?fmtPace(x.mov/(x.dist/1000)):"",o?r1(kmh(x.dist,x.mov)):"",o?x.gain:"",x.hr?x.hr.avg:"",x.hr?x.hr.max:"",x.hr?x.hr.min:"",x.hr&&x.hr.rec!==undefined?x.hr.rec:"",...(c=>c?[c.k,KM[c.m]]:["",""])(kcalOf(x))]}));
   const rs=runsOf(D.cur).slice().reverse();const runs=rs.length?[["Date","Heure","Type","Distance (km)","Durée","En mouvement","Allure (min/km)","Vitesse (km/h)","D+ (m)","D− (m)","FC moy. (bpm)","FC max (bpm)","Altitude"]].concat(
     rs.map(x=>[d2(x.d),h2(x.d),actName(x)+(x.priv?" (incognito)":""),Math.round(x.dist/10)/100,fmtHMS(x.sec),fmtHMS(x.mov),x.type==="bike"?"":fmtPace(x.mov/(x.dist/1000)),r1(kmh(x.dist,x.mov)),x.gain,x.loss,x.hr?x.hr.avg:"",x.hr?x.hr.max:"",x.elev==="ign"?"IGN RGE ALTI":x.elev==="dem"?"Copernicus GLO-90":"GPS"])):null;
   const exs=[["Exercice","Partie du corps","Séances","Séquences","Temps (min)","Répétitions","FC moy. (bpm)","FC max (bpm)"]].concat(
@@ -1776,9 +2013,11 @@ function tables(D){
   D.cur.forEach(x=>(x.items||[]).forEach(it=>{if(EX[it.ex])det.push([d2(x.d),x.name,EX[it.ex].n,ZONES[EX[it.ex].z],it.sec,it.reps,it.seq,it.hrAvg||"",it.hrMax||""])}));
   const zon=[["Partie du corps","Temps (min)","Séquences","Répétitions"]].concat(ZORDER.filter(k=>D.zones[k]).map(k=>[ZONES[k],r1(D.zones[k].sec/60),D.zones[k].seq,D.zones[k].reps]));
   const res=[["Indicateur","Valeur"],["Profil",D.profile],["Période",D.period],["Exporté le",D.now.toLocaleString("fr-FR")],["Séances",D.sum.n],["Séances terminées",D.sum.done],["Temps total (min)",r1(D.sum.sec/60)],
-    ["Séquences d'effort",D.sum.seq],["Jours d'affilée (actuel)",D.sum.streak.cur],["Record de jours d'affilée",D.sum.streak.best],["FC moyenne (bpm)",D.sum.hrAvg??"—"],["FC max atteinte (bpm)",D.sum.hrMax??"—"],["Récupération moyenne pendant les repos (bpm)",D.sum.rec??"—"],["FC max renseignée (bpm)",D.fm||"—"]];
+    ["Séquences d'effort",D.sum.seq],["Jours d'affilée (actuel)",D.sum.streak.cur],["Record de jours d'affilée",D.sum.streak.best],["FC moyenne (bpm)",D.sum.hrAvg??"—"],["FC max atteinte (bpm)",D.sum.hrMax??"—"],["Récupération moyenne pendant les repos (bpm)",D.sum.rec??"—"],["FC max renseignée (bpm)",D.fm||"—"],["Calories estimées (kcal)",(k=>k.n?k.s:"—")(kcalSum(D.cur))]];
   let hz=null;if(D.hz){const tot=D.hz.reduce((a,b)=>a+b,0)||1;hz=[["Zone","Plage (% FC max)","Temps (min)","Part (%)"],["Sous 50 %","< 50",r1(D.hz[0]/60),Math.round(100*D.hz[0]/tot)]].concat(HRZ.map((q,i)=>[q[3],q[0]+"–"+Math.min(q[1],100),r1(D.hz[i+1]/60),Math.round(100*D.hz[i+1]/tot)]))}
-  return {res,ses,exs,det,zon,hz,runs}}
+  const ba=(ST.period?bodyAll().filter(x=>x.ts>=Date.now()-ST.period*DAY):bodyAll()).slice().sort((a,b)=>a.ts-b.ts);
+  const body=ba.length?[["Date","Heure","Repas","Masse (kg)","IMC","Os (%)","Graisse (%)","Eau (%)","Muscle (%)","Kcal (balance)"]].concat(ba.map(e=>[d2(e.ts),h2(e.ts),e.meal==="avant"?"avant":e.meal==="apres"?"après":"",e.kg??"",bmiOf(e.kg)?r1(bmiOf(e.kg)):"",e.bone??"",e.fat??"",e.water??"",e.muscle??"",e.kcal??""])):null;
+  return {res,ses,exs,det,zon,hz,runs,body}}
 function fname(ext,kind){return "coach-maison_"+slug(ST.demo?"exemple":profCur().name)+"_"+(kind?kind+"_":"")+new Date().toISOString().slice(0,10)+"."+ext}
 
 /* ---- CSV (séparateur « ; », UTF-8 avec BOM pour Excel en français) ---- */
@@ -1815,7 +2054,7 @@ function buildXLSX(sheets){const f=[];const n=sheets.length;
   sheets.forEach((s,i)=>f.push({name:"xl/worksheets/sheet"+(i+1)+".xml",data:sheetXML(s.rows)}));
   return zipStore(f)}
 function exportXLSX(){const D=exportData(),T=tables(D);const sh=[{name:"Résumé",rows:T.res},{name:"Séances",rows:T.ses},{name:"Exercices",rows:T.exs},{name:"Parties du corps",rows:T.zon},{name:"Détail",rows:T.det}];
-  if(T.runs)sh.splice(2,0,{name:"Sorties",rows:T.runs});if(T.hz)sh.push({name:"Zones cardiaques",rows:T.hz});saveFile(fname("xlsx"),new Blob([buildXLSX(sh)],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}))}
+  if(T.runs)sh.splice(2,0,{name:"Sorties",rows:T.runs});if(T.hz)sh.push({name:"Zones cardiaques",rows:T.hz});if(T.body)sh.push({name:"Corps",rows:T.body});saveFile(fname("xlsx"),new Blob([buildXLSX(sh)],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}))}
 
 /* ---- PDF (A4, Helvetica, graphiques vectoriels) ---- */
 const W1252={0x20AC:0x80,0x201A:0x82,0x0192:0x83,0x201E:0x84,0x2026:0x85,0x2020:0x86,0x2021:0x87,0x02C6:0x88,0x2030:0x89,0x0160:0x8A,0x2039:0x8B,0x0152:0x8C,0x017D:0x8E,0x2018:0x91,0x2019:0x92,0x201C:0x93,0x201D:0x94,0x2022:0x95,0x2013:0x96,0x2014:0x97,0x02DC:0x98,0x2122:0x99,0x0161:0x9A,0x203A:0x9B,0x0153:0x9C,0x017E:0x9E,0x0178:0x9F,0x2212:0x2D,0x202F:0x20,0x00A0:0x20};
@@ -2070,7 +2309,7 @@ function openRun(d){const r=store.get("history",[]).concat(ST.demo?demoData():[]
   $("#rdTitle").textContent=actIc(r)+" "+actName(r)+" – "+new Date(r.d).toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"})+" à "+h2(r.d);
   const pace=r.mov/(r.dist/1000);
   const st=[["Distance",fmtKm(r.dist)+" km"],["Durée",fmtHMS(r.sec)],["En mouvement",fmtHMS(r.mov)]].concat(r.type==="bike"?[["Vitesse moy.",fmtKmh(kmh(r.dist,r.mov))+" km/h"]]:[["Allure moy.",fmtPace(pace)+" /km"],["Vitesse moy.",fmtKmh(kmh(r.dist,r.mov))+" km/h"]],[["Dénivelé",'+'+r.gain+' m / −'+r.loss+' m']]);
-  if(r.hr)st.push(["FC moy. / max",r.hr.avg+" / "+r.hr.max+" bpm"]);
+  if(r.hr)st.push(["FC moy. / max",r.hr.avg+" / "+r.hr.max+" bpm"]);{const kc=kcalOf(r);if(kc)st.push(["Calories (estim.)","≈ "+nf.format(kc.k)+" kcal"])}
   $("#rdStats").innerHTML=st.map(s=>'<div class="rs"><div class="rk">'+s[0]+'</div><div class="rv">'+s[1]+'</div></div>').join("");
   $("#rdNote").innerHTML=(r.priv?'🕶 Sortie incognito : les '+r.priv+' premières et dernières minutes de trace ne sont pas conservées (distance et durée restent complètes). ':'')+(r.gaps?'⚠ '+r.gaps+' coupure(s) du suivi : portions reliées en ligne droite. ':'')+(r.elev==="ign"?'Altitudes : IGN RGE ALTI® (Géoplateforme, licence Etalab 2.0).':r.elev==="dem"?'Altitudes : modèle Copernicus DEM GLO-90 via <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>.':'Altitudes : GPS du téléphone (imprécis, lissé).');
   $("#rdDem").style.display=r.elev==="ign"||ST.demo||!hasT?"none":"";$("#rdGpx").disabled=$("#rdMaps").disabled=!hasT;$("#rdDem").textContent=r.elev==="dem"?"⛰ Corriger avec l'IGN (plus précis en France)":"⛰ Corriger le dénivelé (modèle de terrain)";$("#rdDel").style.display=ST.demo?"none":"";
@@ -2176,10 +2415,10 @@ $("#hdrProf").onclick=()=>go("params");
 document.querySelectorAll("#expMenu .menupop button").forEach(b=>b.addEventListener("click",()=>{$("#expMenu").open=false}));
 $("#expPDF").onclick=exportPDF;$("#expXLSX").onclick=exportXLSX;$("#expCSV").onclick=()=>exportCSV("seances");$("#expCSV2").onclick=()=>exportCSV("detail");
 function refreshAll(){renderRuns();renderHeader();renderSeances();renderBuilder();renderHistory();renderParams();syncToggles();
-  const v=document.querySelector("section.view.on");if(v&&v.id==="v-stats")renderStats()}
+  const v=document.querySelector("section.view.on");if(v&&v.id==="v-stats")renderStats();if(v&&v.id==="v-corps")renderBody()}
 
 /* ================= INIT ================= */
-fillAddSel();renderLib();renderSources();itEst();refreshAll();
+fillAddSel();renderLib();renderSources();itEst();bodyBind();bFormReset();refreshAll();
 </script>
 <script>try{if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost"))navigator.serviceWorker.register("sw.js")}catch(e){}</script>
 </body>
