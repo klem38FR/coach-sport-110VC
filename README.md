@@ -25,6 +25,7 @@ Avant une grosse mise à jour : Paramètres → Profils → **Exporter** (sauveg
 - Données personnelles : stockées uniquement dans le navigateur de l'appareil (localStorage), par profil.
 - Fonds de carte : © contributeurs OpenStreetMap ; © IGN – Plan IGN et photographies aériennes (Géoplateforme, licence Etalab 2.0).
 - Correction du dénivelé : IGN RGE ALTI® (service de calcul altimétrique de la Géoplateforme) en France ; ailleurs Copernicus DEM GLO-90 via Open-Meteo. Les coordonnées de la sortie sont alors envoyées au service choisi.
+- Calories : estimation par MET (2024 Adult Compendium of Physical Activities) ou, si la FC est mesurée, par l'équation de Keytel et al. (2005). Normes de l'onglet Corps : IMC (OMS), % de graisse (Gallagher et al., 2000), % d'eau (repère indicatif d'une notice de fabricant).
 - Sources des exercices : indiquées sur chaque fiche et dans l'onglet « Sources & conseils ».
 
 Cette application ne remplace pas l'avis d'un médecin ou d'un professionnel du sport.
